@@ -108,10 +108,10 @@ func main() {
 		case ".json", ".js", ".css", ".html", ".htm", ".yaml", ".yml", ".docker", ".xml", ".ts", ".md", ".ini", ".java", ".go", ".sql", ".sh":
 			err = genCodePreview(file, &writer, name, width, height)
 
-		case ".xls", ".xlsx":
+		case ".xls", ".xlsx", ".ods":
 			err = genOfficeOtherPreview(file, &writer, name, width, height)
 
-		case ".doc", ".docx":
+		case ".doc", ".docx", ".odt", ".rtf":
 			err = genOfficeDocPreview(file, &writer, name, width, height)
 
 		case ".jpg", ".png", ".jpeg", ".tiff", ".svg", ".pdf", ".gif", ".webp":
@@ -129,6 +129,7 @@ func main() {
 			}
 			writer.WriteTo(w)
 		} else {
+			log.Println(err.Error())
 			format.Text(w, 500, err.Error())
 		}
 	})

@@ -1,9 +1,6 @@
 FROM ubuntu:20.04 as base
 
 WORKDIR "/app"
-COPY *.go *.mod *.sum /app/
-COPY fonts /app/fonts/
-COPY opentype /usr/share/fonts/opentype/plutosans
 
 FROM base AS build-arm64
 RUN     DEBIAN_FRONTEND=noninteractive \
@@ -22,10 +19,7 @@ RUN     DEBIAN_FRONTEND=noninteractive \
 
 FROM build-${TARGETARCH} AS build
 
-RUN     apt-get update && \
-        apt-get clean && \
-        apt-get install -f && \
-        DEBIAN_FRONTEND=noninteractive \
+RUN     DEBIAN_FRONTEND=noninteractive \
         apt-get install -y -f --force-yes \
         	libreoffice \
                 libreofficekit-dev && \
@@ -40,6 +34,10 @@ RUN     apt-get update && \
         fc-cache -vr && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/
+
+COPY *.go *.mod *.sum /app/
+COPY fonts /app/fonts/
+COPY opentype /usr/share/fonts/opentype/plutosans
 
 RUN     export PATH=$PATH:/usr/local/go/bin && \
         go build -tags extralibs
